@@ -1,0 +1,25 @@
+{
+  "brave": {
+    "baseUrl": "https://api.search.brave.com/res/v1/web/search",
+    "apiKey": "YOUR_BRAVE_API_KEY"
+  },
+  "bocha": {
+    "baseUrl": "https://api.bocha.cn/v1/web-search",
+    "apiKey": "YOUR_BOCHA_API_KEY"
+  },
+  "tavily": {
+    "baseUrl": "https://api.tavily.com/search",
+    "apiKey": "YOUR_TAVILY_API_KEY"
+  },
+  "serpapi": {
+    "baseUrl": "https://serpapi.com",
+    "apiKey": "YOUR_SERPAPI_API_KEY"
+  },
+  "exa": {
+    "baseUrl": "https://mcp.exa.ai/mcp",
+    "apiKey": "YOUR_EXA_API_KEY"
+  },
+  "baidu": {
+    "apiKey": "YOUR_BAIDU_QIANFAN_API_KEY"
+  }
+}
