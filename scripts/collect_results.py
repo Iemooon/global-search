@@ -115,64 +115,41 @@ def normalize_found_url(url: str) -> str:
 
 
 def exa_web_search(query: str, limit: int) -> List[Dict[str, Any]]:
+    """Exa search using standard REST API (not MCP endpoint)."""
     api_key = provider_value("exa", "apiKey", "EXA_API_KEY", "")
-    base_url = provider_value("exa", "baseUrl", "EXA_BASE_URL", "https://mcp.exa.ai/mcp")
-    if str(base_url).strip() in {"exa.ai", "https://exa.ai", "http://exa.ai"}:
-        base_url = "https://mcp.exa.ai/mcp"
+    # Use standard REST API endpoint
+    base_url = provider_value("exa", "baseUrl", "EXA_BASE_URL", "https://api.exa.ai/search")
 
     req = {
-        "jsonrpc": "2.0",
-        "id": int(datetime.now(tz=timezone.utc).timestamp()),
-        "method": "tools/call",
-        "params": {
-            "name": "web_search_exa",
-            "arguments": {
-                "query": query,
-                "numResults": limit,
-                "type": "auto",
-                "livecrawl": "fallback",
-            },
-        },
+        "query": query,
+        "numResults": limit,
+        "type": "auto",
     }
 
     headers = {
         "Content-Type": "application/json",
-        "Accept": "application/json, text/event-stream",
+        "User-Agent": "OpenClaw-GlobalSearch/1.0",
     }
     if api_key:
-        headers["Authorization"] = f"Bearer {api_key}"
+        headers["x-api-key"] = api_key
 
     r = Request(str(base_url), data=json.dumps(req).encode("utf-8"), method="POST", headers=headers)
     with urlopen(r, timeout=HTTP_TIMEOUT_SECONDS) as resp:
-        text = resp.read().decode("utf-8", errors="replace")
-
-    payload = parse_sse_payload(text)
-    content = payload.get("result", {}).get("content", [])
-    blob = "\n\n".join(part.get("text", "") for part in content if part.get("type") == "text")
+        data = json.loads(resp.read().decode("utf-8", errors="replace"))
 
     items: List[Dict[str, Any]] = []
-    for title, url in re.findall(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", blob):
-        nu = normalize_found_url(url)
+    for result in data.get("results", []):
+        url = result.get("url") or result.get("id", "")
+        title = result.get("title", "") or url
         items.append(
             {
-                "title": title.strip()[:180],
-                "url": nu,
-                "snippet": "From Exa web_search_exa",
-                "score": 0.75,
+                "title": title[:180],
+                "url": normalize_found_url(url),
+                "snippet": result.get("text", "")[:200] if result.get("text") else "From Exa neural search",
+                "publishedAt": result.get("publishedDate"),
+                "score": 0.9,
             }
         )
-
-    if not items:
-        for url in re.findall(r'https?://[^\s)\]>"\']+', blob):
-            nu = normalize_found_url(url)
-            items.append(
-                {
-                    "title": nu[:120],
-                    "url": nu,
-                    "snippet": "From Exa web_search_exa",
-                    "score": 0.6,
-                }
-            )
 
     return items[:limit]
 

@@ -1,5 +1,5 @@
 ---
-name: global-search-router
+name: global-search
 description: Global multi-engine search routing and result fusion. Use when user wants broader, less biased information coverage across regions/languages.
 author: lemon-team
 version: 0.1.0

@@ -1,12 +1,12 @@
 {
-  "name": "global-search-router",
+  "name": "global-search",
   "version": "0.2.0",
   "description": "Global-first multi-engine search router plugin for OpenClaw",
   "type": "module",
-  "main": "index.js",
+  "main": "lib/index.js",
   "openclaw": {
     "extensions": [
-      "./index.js"
+      "lib/index.js"
     ]
   }
 }

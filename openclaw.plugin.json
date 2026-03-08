@@ -1,10 +1,10 @@
 {
-  "id": "global-search-router",
-  "name": "Global Search Router",
+  "id": "global-search",
+  "name": "Global Search",
   "version": "0.2.0",
   "description": "Global-first multi-engine search routing and fusion",
   "author": "lemon-team",
-  "main": "./index.js",
+  "main": "lib/index.js",
   "configSchema": {
     "type": "object",
     "additionalProperties": false,
