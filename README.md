@@ -1,4 +1,4 @@
-# Global Search Router
+# Global Search
 
 **A multi-engine search routing and fusion plugin for [OpenClaw](https://github.com/openclaw/openclaw).**
 
